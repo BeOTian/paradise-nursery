@@ -1,21 +1,37 @@
 import React, { useState } from 'react';
+
 export default function ProductList() {
-  const [added, setAdded] = useState(false);
+  const [cartQuantity, setCartQuantity] = useState(0);
+
+  const plantsArray = [
+    { category: 'Air Purifying', plants: [{ name: 'Snake Plant', price: 15 }, { name: 'Spider Plant', price: 12 }] },
+    { category: 'Aromatic', plants: [{ name: 'Lavender', price: 20 }, { name: 'Mint', price: 10 }] },
+    { category: 'Succulents', plants: [{ name: 'Aloe Vera', price: 8 }, { name: 'Cactus', price: 5 }] }
+  ];
+
+  const handleAddToCart = () => {
+    setCartQuantity(cartQuantity + 1);
+  };
+
   return (
     <div>
       <nav>
         <a href="#home">Home</a> | <a href="#plants">Plants</a> | <a href="#cart">Cart</a>
-        <span>Cart Icon Count: 1</span>
+        <span>Cart Icon Count: {cartQuantity}</span>
       </nav>
-      <h2>Category 1</h2>
-      <div><img src="thumb1.jpg" alt="Plant 1"/><h3>Plant 1</h3><p>$10</p><button disabled={added}>Add to Cart</button></div>
-      <div><img src="thumb2.jpg" alt="Plant 2"/><h3>Plant 2</h3><p>$20</p><button disabled={added}>Add to Cart</button></div>
-      <h2>Category 2</h2>
-      <div><img src="thumb3.jpg" alt="Plant 3"/><h3>Plant 3</h3><p>$30</p><button disabled={added}>Add to Cart</button></div>
-      <div><img src="thumb4.jpg" alt="Plant 4"/><h3>Plant 4</h3><p>$40</p><button disabled={added}>Add to Cart</button></div>
-      <h2>Category 3</h2>
-      <div><img src="thumb5.jpg" alt="Plant 5"/><h3>Plant 5</h3><p>$50</p><button disabled={added}>Add to Cart</button></div>
-      <div><img src="thumb6.jpg" alt="Plant 6"/><h3>Plant 6</h3><p>$60</p><button disabled={added}>Add to Cart</button></div>
+      {plantsArray.map((categoryObj, index) => (
+        <div key={index}>
+          <h2>{categoryObj.category}</h2>
+          {categoryObj.plants.map((plant, idx) => (
+            <div key={idx}>
+              <img src="plant.jpg" alt={plant.name} />
+              <h3>{plant.name}</h3>
+              <p>${plant.price}</p>
+              <button onClick={handleAddToCart}>Add to Cart</button>
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
