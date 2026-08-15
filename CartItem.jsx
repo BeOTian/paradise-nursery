@@ -1,34 +1,56 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { removeItem, updateQuantity } from './CartSlice';
 
-export default function CartItem() {
-  const [quantity, setQuantity] = useState(1);
-  const unitPrice = 10;
+export default function CartItem({ onContinueShopping }) {
+  const cartItems = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
 
-  const handleIncrement = () => setQuantity(quantity + 1);
-  const handleDecrement = () => setQuantity(quantity - 1);
-  const handleDelete = () => setQuantity(0);
+  // Hàm tính tổng tiền động dựa vào giỏ hàng thực tế
+  const calculateTotalAmount = () => {
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
 
-  const totalCost = unitPrice * quantity;
-  const totalCartAmount = totalCost; // Simplified for AI Grader
+  const handleIncrement = (item) => {
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
+  };
+
+  const handleDecrement = (item) => {
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+    } else {
+      dispatch(removeItem(item));
+    }
+  };
+
+  const handleDelete = (item) => {
+    dispatch(removeItem(item));
+  };
 
   return (
-    <div>
-      <h2>Total Cart Amount: ${totalCartAmount}</h2>
-      
-      {quantity > 0 && (
-        <div>
-          <img src="thumb.jpg" alt="Plant Name" />
-          <h3>Plant Name</h3>
-          <p>Unit Price: ${unitPrice}</p>
-          <p>Total Cost: ${totalCost}</p>
-          <button onClick={handleIncrement}>Increase</button>
-          <button onClick={handleDecrement}>Decrease</button>
-          <button onClick={handleDelete}>Delete</button>
-        </div>
-      )}
+    <div className="cart-container">
+      <h2>Total Cart Amount: ${calculateTotalAmount()}</h2>
 
-      <button onClick={() => alert('Coming Soon')}>Checkout</button>
-      <button>Continue Shopping</button>
+      <div className="cart-items">
+        {cartItems.map((item, index) => (
+          <div key={index} className="cart-item">
+            <img src={item.image} alt={item.name} />
+            <h3>{item.name}</h3>
+            <p>Unit Price: ${item.price}</p>
+            {/* Hiển thị tổng tiền cho từng loại cây */}
+            <p>Total Cost: ${item.price * item.quantity}</p>
+            
+            <button onClick={() => handleIncrement(item)}>Increase</button>
+            <button onClick={() => handleDecrement(item)}>Decrease</button>
+            <button onClick={() => handleDelete(item)}>Delete</button>
+          </div>
+        ))}
+      </div>
+
+      <div className="cart-actions">
+        <button onClick={() => alert('Coming Soon')}>Checkout</button>
+        <button onClick={onContinueShopping}>Continue Shopping</button>
+      </div>
     </div>
   );
 }
