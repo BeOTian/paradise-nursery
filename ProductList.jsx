@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from './CartSlice';
 
 export default function ProductList() {
   const dispatch = useDispatch();
-  // Lấy dữ liệu giỏ hàng từ Redux store
   const cartItems = useSelector((state) => state.cart.items);
   
   // Tính tổng số lượng hiển thị trên Navbar
   const cartQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-  // Mảng dữ liệu: 3 danh mục, mỗi danh mục 6 cây
+  // Mảng dữ liệu: 3 danh mục, mỗi danh mục 6 cây (Tổng 18 cây)
   const plantsArray = [
     {
       category: 'Air Purifying',
@@ -63,9 +62,7 @@ export default function ProductList() {
           <h2>{categoryObj.category}</h2>
           <div className="plant-grid">
             {categoryObj.plants.map((plant, idx) => {
-              // Kiểm tra xem cây này đã có trong giỏ hàng chưa để disable nút
               const isAdded = cartItems.some(item => item.name === plant.name);
-              
               return (
                 <div key={idx} className="plant-card">
                   <img src={plant.image} alt={plant.name} />
